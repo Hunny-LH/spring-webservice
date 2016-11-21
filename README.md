@@ -6,7 +6,8 @@
 ## 代码解析
 ### 先来看下服务端
 `WSServerInterface.java` 
-```
+
+```java
 @WebService
 public interface WSServerInterface {
 
@@ -22,7 +23,8 @@ public interface WSServerInterface {
 
 
 `WSServer.java`
-```
+
+```java
 /**
  * webService服务提供类的实现，
  * 主要在这里实现webService返回类型的转换， 例子中是从List转换成xml格式
@@ -70,7 +72,8 @@ public class WSServer implements WSServerInterface {
 @Component注解主要是将该类注册为Spring管理的bean，同样可以使用xml的方式去配置。
 
 `spring-ws-server.xml`
-```
+
+```xml
 <bean class="org.springframework.remoting.jaxws.SimpleJaxWsServiceExporter">
         <property name="baseAddress" value="http://127.0.0.1:8089/"/>
 </bean>
@@ -81,7 +84,8 @@ public class WSServer implements WSServerInterface {
 有了以上的准备之后，就可以启动spring，是WebService运行起来。
 
 `Server.java`
-```
+
+```java 
 public class Server {
 
     public static void main(String[] args) throws IOException {
@@ -94,7 +98,8 @@ public class Server {
 我这里为了方便，直接使用了ClassPathXmlApplicationContext的方式加载，实际上也可以集成SpringMVC通过web容器加载启动Spring上下文。
 
 成功暴露出服务了：`http://localhost:8089/hanTest?wsdl`
-```
+
+```xml
 <definitions xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="com.han.wsdemo.ws.WSServerInterface" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="com.han.wsdemo.ws.WSServerInterface" name="hanTest">
     <import namespace="http://ws.wsdemo.han.com/" location="http://localhost:8089/hanTest?wsdl=1"/>
     <binding xmlns:ns1="http://ws.wsdemo.han.com/" name="WSServerPortBinding" type="ns1:WSServerInterface">
@@ -130,7 +135,8 @@ public class Server {
 
 ### 下来看客户端
 `spring-ws-client.xml`
-```
+
+```java
     <bean id="wsService" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
         <property name="serviceInterface" value="com.han.wsdemo.ws.WSServerClientInterface"/>
         <property name="wsdlDocumentUrl" value="http://localhost:8089/hanTest?wsdl"/>
@@ -153,7 +159,8 @@ serviceName - service节点的name
 portName - port节点的name
 
 `WSServerClientInterface.java`
-```
+
+```java
 @WebService
 public interface WSServerClientInterface {
     @WebMethod(operationName = "getAsXml")
@@ -167,7 +174,7 @@ public interface WSServerClientInterface {
 @WebMethod指定了方法对应的wsdl中的operation
 
 有了服务定义的接口，以及Spring配置的代理对象，就可以注入使用这个bean来完成WebService的调用了。
-```
+```java
 public class Client {
 
     public static void main(String[] args) {
